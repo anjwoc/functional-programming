@@ -1,5 +1,7 @@
 const { map, reduce, filter } = require('./lib');
 
+const log = console.log;
+
 const products = [
   { name: 'a', price: 15000 },
   { name: 'b', price: 20000 },
@@ -29,4 +31,37 @@ console.log(
       filter((p) => p.price >= 20000, products),
     ),
   ),
+);
+
+// 코드를 값으로 다루어 표현력 높이기
+const go = (...args) => {
+  reduce((a, func) => func(a), args);
+};
+
+go(
+  0,
+  (a) => a + 1,
+  (a) => a + 10,
+  (a) => a + 100,
+  log,
+);
+// 111
+
+// const pipe = (...fs) => (args) => go(args, ...fs);
+const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs);
+
+const f = pipe(
+  (a, b) => a + b,
+  (a) => a + 10,
+  (a) => a + 100,
+  console.log,
+);
+
+f(0, 1);
+go(
+  products,
+  (products) => filter((p) => p.price > 20000, products),
+  (filteredProducts) => map((p) => p.price, filteredProducts),
+  (prices) => reduce(add, prices),
+  console.log,
 );
